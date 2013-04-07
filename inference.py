@@ -4,7 +4,7 @@
 # project. You are free to use and extend these projects for educational
 # purposes. The Pacman AI projects were developed at UC Berkeley, primarily by
 # John DeNero (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
-# Student side autograding was added by Brad Miller, Nick Hay, and Pieter 
+# Student side autograding was added by Brad Miller, Nick Hay, and Pieter
 # Abbeel in Spring 2013.
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
@@ -139,13 +139,28 @@ class ExactInference(InferenceModule):
         noisyDistance = observation
         emissionModel = busters.getObservationDistribution(noisyDistance)
         pacmanPosition = gameState.getPacmanPosition()
-
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        print self.getJailPosition()
+        # print noisyDistance
+        print emissionModel
+        # print pacmanPosition
+        print self.beliefs
+        print self.legalPositions
+        if noisyDistance == None:
+            self.beliefs = {k: 0 for k, v in self.beliefs.items()}
+        for location in self.legalPositions:
+            distance = util.manhattanDistance(location, pacmanPosition)
+            self.beliefs[location] = emissionModel[distance]
+
+
+# {1: 0.16492146596858642, 2: 0.16753926701570682, 3: 0.33507853403141363, 4: 0.16753926701570682, 5: 0.08376963350785341, 6: 0.041884816753926704, 7: 0.020942408376963352, 8: 0.010471204188481676, 9: 0.005235602094240838, 10: 0.002617801047120419}
+# {(5, 4): 0.125, (3, 4): 0.125, (1, 4): 0.125, (7, 4): 0.125, (9, 4): 0.125, (5, 2): 0.125, (2, 4): 0.125, (8, 4): 0.125}
+# [(1, 4), (2, 4), (3, 4), (5, 2), (5, 4), (7, 4), (8, 4), (9, 4)]
 
         # Replace this code with a correct observation update
         # Be sure to handle the "jail" edge case where the ghost is eaten
         # and noisyDistance is None
+
         allPossible = util.Counter()
         for p in self.legalPositions:
             trueDistance = util.manhattanDistance(p, pacmanPosition)
@@ -348,10 +363,10 @@ class JointParticleFilter:
 
     def initializeParticles(self):
         """
-        Initialize particles to be consistent with a uniform prior.  
+        Initialize particles to be consistent with a uniform prior.
 
         Each particle is a tuple of ghost positions. Use self.numParticles for
-        the number of particles. You may find the python package 'itertools' helpful.  
+        the number of particles. You may find the python package 'itertools' helpful.
         Specifically, you will need to think about permutations of legal ghost
         positions, with the additional understanding that ghosts may occupy the
         same space. Look at the 'product' function in itertools to get an
