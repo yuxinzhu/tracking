@@ -227,11 +227,13 @@ class ExactInference(InferenceModule):
         """
 
         "*** YOUR CODE HERE ***"
-        allPossible = self.beliefs
+
+        allPossible = util.Counter()
         for oldPos in self.legalPositions:
             newPosDist = self.getPositionDistribution(self.setGhostPosition(gameState, oldPos))
             for newPos, prob in newPosDist.items():
-                allPossible[oldPos] += prob*allPossible[oldPos]
+                allPossible[newPos] += prob*self.beliefs[oldPos]
+            # allPossible[oldPos] *= self.beliefs[gameState.getPacmanPosition()]
             # allPossible[oldPos] *= self.beliefs[]
         self.beliefs = allPossible
             # print newPosDist
