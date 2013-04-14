@@ -141,17 +141,13 @@ class ExactInference(InferenceModule):
         pacmanPosition = gameState.getPacmanPosition()
         "*** YOUR CODE HERE ***"
         # jail position is (1, 1) not one of legal positions
-        print self.getJailPosition()
+        # print self.getJailPosition()
         # print noisyDistance
-        print emissionModel
+        # print emissionModel
         # print pacmanPosition
-        print self.beliefs
-        print self.legalPositions
-        if noisyDistance == None:
-            self.beliefs = {k: 0 for k, v in self.beliefs.items()}
-        for location in self.legalPositions:
-            distance = util.manhattanDistance(location, pacmanPosition)
-            self.beliefs[location] = emissionModel[distance]
+        # print self.beliefs
+        # print self.legalPositions
+
 
 
 # {1: 0.16492146596858642, 2: 0.16753926701570682, 3: 0.33507853403141363, 4: 0.16753926701570682, 5: 0.08376963350785341, 6: 0.041884816753926704, 7: 0.020942408376963352, 8: 0.010471204188481676, 9: 0.005235602094240838, 10: 0.002617801047120419}
@@ -166,6 +162,15 @@ class ExactInference(InferenceModule):
         for p in self.legalPositions:
             trueDistance = util.manhattanDistance(p, pacmanPosition)
             if emissionModel[trueDistance] > 0: allPossible[p] = 1.0
+
+        if noisyDistance == None:
+            allPossible = util.Counter()
+            allPossible[self.getJailPosition] = 1.0
+        else:
+            for location in self.legalPositions:
+                distance = util.manhattanDistance(location, pacmanPosition)
+                self.beliefs[location] = emissionModel[distance] * self.beliefs[location]
+        # print self.beliefs
 
         "*** END YOUR CODE HERE ***"
 
