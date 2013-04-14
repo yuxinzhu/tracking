@@ -159,9 +159,9 @@ class ExactInference(InferenceModule):
         # and noisyDistance is None
 
         allPossible = util.Counter()
-        for p in self.legalPositions:
-            trueDistance = util.manhattanDistance(p, pacmanPosition)
-            if emissionModel[trueDistance] > 0: allPossible[p] = 1.0
+        # for p in self.legalPositions:
+        #     trueDistance = util.manhattanDistance(p, pacmanPosition)
+        #     if emissionModel[trueDistance] > 0: allPossible[p] = 1.0
 
         if noisyDistance == None:
             allPossible = util.Counter()
