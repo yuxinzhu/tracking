@@ -4,7 +4,7 @@
 # project. You are free to use and extend these projects for educational
 # purposes. The Pacman AI projects were developed at UC Berkeley, primarily by
 # John DeNero (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
-# Student side autograding was added by Brad Miller, Nick Hay, and Pieter 
+# Student side autograding was added by Brad Miller, Nick Hay, and Pieter
 # Abbeel in Spring 2013.
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/pacman/pacman.html
 
@@ -78,7 +78,7 @@ class BustersAgent:
     def getAction(self, gameState):
         "Updates beliefs, then chooses an action based on updated beliefs."
         for index, inf in enumerate(self.inferenceModules):
-            if not self.firstMove and self.elapseTimeEnable: 
+            if not self.firstMove and self.elapseTimeEnable:
                 inf.elapseTime(gameState)
             self.firstMove = False
             if self.observeEnable:
@@ -151,7 +151,10 @@ class GreedyBustersAgent(BustersAgent):
         livingGhostPositionDistributions = [beliefs for i,beliefs
                                             in enumerate(self.ghostBeliefs)
                                             if livingGhosts[i+1]]
+<<<<<<< HEAD
         "*** YOUR CODE HERE ***"
+=======
+>>>>>>> 8c9ece9056602fc27459f10ab6af849f44730e86
         localMax = []
         for belief in livingGhostPositionDistributions:
             localMax.append(belief.argMax())
@@ -165,5 +168,8 @@ class GreedyBustersAgent(BustersAgent):
             nextLocation = Actions.getSuccessor(pacmanPosition, action)
             temp.append((self.distancer.getDistance(nextLocation, goalCoordinate), action))
         return min(temp)[1]
+<<<<<<< HEAD
 
         # util.raiseNotDefined()
+=======
+>>>>>>> 8c9ece9056602fc27459f10ab6af849f44730e86

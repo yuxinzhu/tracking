@@ -242,7 +242,7 @@ class ExactInference(InferenceModule):
         #     newPosDist = self.getPositionDistribution(self.setGhostPosition(gameState, oldPos))
         #     for newPos, prob in newPosDist.items():
         #         allPossible[oldPos] += prob*allPossible[oldPos]
-        #     allPossible[oldPos] *= 
+        #     allPossible[oldPos] *=
         # self.beliefs = allPossible
 
 
@@ -283,6 +283,12 @@ class ParticleFilter(InferenceModule):
             and will produce errors
         """
         "*** YOUR CODE HERE ***"
+        count, self.particles = 0, []
+        while count < self.numParticles:
+            for position in self.legalPositions:
+                if count < self.numParticles:
+                    self.particles.append(position)
+                    count += 1
 
     def observe(self, observation, gameState):
         """
@@ -316,8 +322,21 @@ class ParticleFilter(InferenceModule):
         noisyDistance = observation
         emissionModel = busters.getObservationDistribution(noisyDistance)
         pacmanPosition = gameState.getPacmanPosition()
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        if noisyDistance == None: # Case 1
+            self.particles = [self.getJailPosition()] * self.numParticles
+        else:
+            allPossible, oldBelief = util.Counter(), self.getBeliefDistribution()
+            for location in self.legalPositions:
+                distance = util.manhattanDistance(location, pacmanPosition)
+                allPossible[location] += emissionModel[distance] * oldBelief[location]
+            if not any(allPossible.values()): # Case 2
+                self.initializeUniformly(gameState)
+            else:
+                temp = []
+                for _ in range(0, self.numParticles):
+                    temp.append(util.sample(allPossible)) #recreate samples based on distribution allPossible
+                self.particles = temp
 
     def elapseTime(self, gameState):
         """
@@ -344,7 +363,18 @@ class ParticleFilter(InferenceModule):
           essentially converts a list of particles into a belief distribution (a Counter object)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        distribution = util.Counter()
+        for element in self.particles:
+            if element in distribution:
+                distribution[element] += 1.0
+            else:
+                distribution[element] = 1.0
+
+        # normalize
+        for key, value in distribution.items():
+            distribution[key] = value/self.numParticles
+
+        return distribution
 
 class MarginalInference(InferenceModule):
     "A wrapper around the JointInference module that returns marginal beliefs about ghosts."
