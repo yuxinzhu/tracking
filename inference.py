@@ -354,7 +354,24 @@ class ParticleFilter(InferenceModule):
         belief distribution
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # allPossible = util.Counter()
+        # for oldPos in self.legalPositions:
+        #     newPosDist = self.getPositionDistribution(self.setGhostPosition(gameState, oldPos))
+        #     for newPos, prob in newPosDist.items():
+        #         allPossible[newPos] += prob*self.beliefs[oldPos]
+        #     # allPossible[oldPos] *= self.beliefs[gameState.getPacmanPosition()]
+        #     # allPossible[oldPos] *= self.beliefs[]
+        # self.beliefs = allPossible
+        # print self.particles
+
+        tmpParticles = []
+        for oldPos in self.particles:
+            newPosDist = self.getPositionDistribution(self.setGhostPosition(gameState, oldPos))     
+            tmpParticles.append(util.sample(newPosDist))
+        self.particles = tmpParticles
+
+
+        # util.raiseNotDefined()
 
     def getBeliefDistribution(self):
         """

@@ -151,10 +151,9 @@ class GreedyBustersAgent(BustersAgent):
         livingGhostPositionDistributions = [beliefs for i,beliefs
                                             in enumerate(self.ghostBeliefs)
                                             if livingGhosts[i+1]]
-<<<<<<< HEAD
+
         "*** YOUR CODE HERE ***"
-=======
->>>>>>> 8c9ece9056602fc27459f10ab6af849f44730e86
+
         localMax = []
         for belief in livingGhostPositionDistributions:
             localMax.append(belief.argMax())
@@ -168,8 +167,7 @@ class GreedyBustersAgent(BustersAgent):
             nextLocation = Actions.getSuccessor(pacmanPosition, action)
             temp.append((self.distancer.getDistance(nextLocation, goalCoordinate), action))
         return min(temp)[1]
-<<<<<<< HEAD
+
 
         # util.raiseNotDefined()
-=======
->>>>>>> 8c9ece9056602fc27459f10ab6af849f44730e86
+
