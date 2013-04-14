@@ -326,12 +326,12 @@ class ParticleFilter(InferenceModule):
         if noisyDistance == None: # Case 1
             self.particles = [self.getJailPosition()] * self.numParticles
         else:
-            allPossible = util.Counter()
+            allPossible, oldBelief = util.Counter(), self.getBeliefDistribution()
             for location in self.legalPositions:
                 distance = util.manhattanDistance(location, pacmanPosition)
-                allPossible[location] += emissionModel[distance]
+                allPossible[location] += emissionModel[distance] * oldBelief[location]
             if not any(allPossible.values()): # Case 2
-                self.initializeUniformly()
+                self.initializeUniformly(gameState)
             else:
                 temp = []
                 for _ in range(0, self.numParticles):
