@@ -354,15 +354,6 @@ class ParticleFilter(InferenceModule):
         belief distribution
         """
         "*** YOUR CODE HERE ***"
-        # allPossible = util.Counter()
-        # for oldPos in self.legalPositions:
-        #     newPosDist = self.getPositionDistribution(self.setGhostPosition(gameState, oldPos))
-        #     for newPos, prob in newPosDist.items():
-        #         allPossible[newPos] += prob*self.beliefs[oldPos]
-        #     # allPossible[oldPos] *= self.beliefs[gameState.getPacmanPosition()]
-        #     # allPossible[oldPos] *= self.beliefs[]
-        # self.beliefs = allPossible
-        # print self.particles
 
         tmpParticles = []
         for oldPos in self.particles:
@@ -456,6 +447,23 @@ class JointParticleFilter:
 
         """
         "*** YOUR CODE HERE ***"
+        possPositions = list(itertools.product(self.legalPositions, repeat = self.numGhosts))
+        # print possPositions
+        random.shuffle(possPositions)
+        # if len(possPositions) >= self.numParticles:
+        #     self.particles = possPositions[:selnumParticles]
+        
+        count, self.particles = 0, []
+        while count < self.numParticles:
+            for position in possPositions:
+                if count < self.numParticles:
+                    self.particles.append(position)
+                    count += 1
+                else:
+                    break
+        
+
+
 
     def addGhostAgent(self, agent):
         "Each ghost agent is registered separately and stored (in case they are different)."
@@ -502,6 +510,50 @@ class JointParticleFilter:
         emissionModels = [busters.getObservationDistribution(dist) for dist in noisyDistances]
 
         "*** YOUR CODE HERE ***"
+        self.particles = [list(tup) for tup in self.particles]
+        allPossible = util.Counter()
+
+        # .. I'm iterating through the particles and within that through the ghosts.. 
+        # and then finding the trueDistance from the pacman position to the particle 
+        # using the appropriate emissionModel. then multiplying the emission models 
+        # for each position for each ghost within the particle, which will be the weight 
+        # of the entire particle.. normalizing.. and then resampling...
+
+
+        for index, particleSample in enumerate(util)
+        # for index, ghostParticles in enumerate(transposedParticles): # for all values for each ghost
+        #     if noisyDistances[index] == None: # Case 1
+        #         ghost = [self.getJailPosition(i)] * self.numParticles
+        #     else:
+        #         temp = 0
+        #         for location in ghostParticles:
+        #             distance = util.manhattanDistance(location, pacmanPosition)
+        #             temp += emissionModels[index][distance]
+
+
+
+
+
+
+        
+        for i in range(self.numGhosts):
+            if noisyDistance == None: # Case 1
+                self.particles = [self.getJailPosition(i)] * self.numParticles
+            else:
+                allPossible, oldBelief = util.Counter(), self.getBeliefDistribution()
+                for location in self.legalPositions:
+                    distance = util.manhattanDistance(location, pacmanPosition)
+                    allPossible[location] += emissionModel[distance] * oldBelief[location]
+                if not any(allPossible.values()): # Case 2
+                    self.initializeUniformly(gameState)
+                else:
+                    temp = []
+                    for _ in range(0, self.numParticles):
+                        temp.append(util.sample(allPossible)) #recreate samples based on distribution allPossible
+                    self.particles = temp
+        self.particles = [tuple(lst) for lst in self.particles]
+
+
 
     def getParticleWithGhostInJail(self, particle, ghostIndex):
         particle = list(particle)
@@ -562,6 +614,16 @@ class JointParticleFilter:
 
     def getBeliefDistribution(self):
         "*** YOUR CODE HERE ***"
+        distribution = util.Counter()
+        for element in self.particles:
+            distribution[element] += 1.0
+
+        # normalize
+        for key, value in distribution.items():
+            distribution[key] = value/self.numParticles
+
+        return distribution
+
 
 # One JointInference module is shared globally across instances of MarginalInference
 jointInference = JointParticleFilter()
