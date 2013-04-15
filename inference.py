@@ -520,7 +520,7 @@ class JointParticleFilter:
             for index, particle in enumerate(self.particles):
                 for i in range(self.numGhosts):
                     if noisyDistances[i] == None:
-                        self.particles[index] = self.getParticleWithGhostInJail(particle, i)
+                        particle = self.getParticleWithGhostInJail(particle, i)
         else:
             allPossible.normalize()
             temp = []
