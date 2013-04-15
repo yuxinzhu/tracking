@@ -512,6 +512,22 @@ class JointParticleFilter:
         "*** YOUR CODE HERE ***"
         self.particles = [list(tup) for tup in self.particles]
         allPossible = util.Counter()
+        for particle in self.particles:
+            for i in range(self.numGhosts):
+                if noisyDistances[i] == None: # Case 1
+                    particle[i] = self.getJailPosition(i)
+                else:
+                    distance = util.manhattanDistance(particle[i], pacmanPosition)
+                    allPossible[particle[i]] *= emissionModels[i][distance]
+        if not any(allPossible.values()): # Case 2
+            self.initializeParticles()
+        else:
+            allPossible.normalize()
+            temp = []
+            for _ in range(0, self.numParticles):
+                temp.append(util.sample(allPossible)) #recreate samples based on distribution allPossible
+                self.particles = temp
+
 
         # .. I'm iterating through the particles and within that through the ghosts.. 
         # and then finding the trueDistance from the pacman position to the particle 
@@ -520,15 +536,6 @@ class JointParticleFilter:
         # of the entire particle.. normalizing.. and then resampling...
 
 
-        for index, particleSample in enumerate(util)
-        # for index, ghostParticles in enumerate(transposedParticles): # for all values for each ghost
-        #     if noisyDistances[index] == None: # Case 1
-        #         ghost = [self.getJailPosition(i)] * self.numParticles
-        #     else:
-        #         temp = 0
-        #         for location in ghostParticles:
-        #             distance = util.manhattanDistance(location, pacmanPosition)
-        #             temp += emissionModels[index][distance]
 
 
 
@@ -536,21 +543,21 @@ class JointParticleFilter:
 
 
         
-        for i in range(self.numGhosts):
-            if noisyDistance == None: # Case 1
-                self.particles = [self.getJailPosition(i)] * self.numParticles
-            else:
-                allPossible, oldBelief = util.Counter(), self.getBeliefDistribution()
-                for location in self.legalPositions:
-                    distance = util.manhattanDistance(location, pacmanPosition)
-                    allPossible[location] += emissionModel[distance] * oldBelief[location]
-                if not any(allPossible.values()): # Case 2
-                    self.initializeUniformly(gameState)
-                else:
-                    temp = []
-                    for _ in range(0, self.numParticles):
-                        temp.append(util.sample(allPossible)) #recreate samples based on distribution allPossible
-                    self.particles = temp
+        # for i in range(self.numGhosts):
+        #     if noisyDistance == None: # Case 1
+        #         self.particles = [self.getJailPosition(i)] * self.numParticles
+        #     else:
+        #         allPossible, oldBelief = util.Counter(), self.getBeliefDistribution()
+        #         for location in self.legalPositions:
+        #             distance = util.manhattanDistance(location, pacmanPosition)
+        #             allPossible[location] += emissionModel[distance] * oldBelief[location]
+        #         if not any(allPossible.values()): # Case 2
+        #             self.initializeUniformly(gameState)
+        #         else:
+        #             temp = []
+        #             for _ in range(0, self.numParticles):
+        #                 temp.append(util.sample(allPossible)) #recreate samples based on distribution allPossible
+        #             self.particles = temp
         self.particles = [tuple(lst) for lst in self.particles]
 
 
